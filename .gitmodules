@@ -5,8 +5,8 @@
 [submodule "externals/depot_tools"]
 	path = externals/depot_tools
 	url = https://chromium.googlesource.com/chromium/tools/depot_tools.git
-	branch = master
+	branch = main
 [submodule "docs"]
 	path = docs
 	url = https://github.com/mono/SkiaSharp-API-docs
-	branch = master
+	branch = main
