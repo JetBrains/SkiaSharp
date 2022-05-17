@@ -9,6 +9,31 @@ namespace SkiaSharp
 #endif
 {
 #if USE_DELEGATES || USE_LIBRARY_LOADER
+
+	public static class LibraryLoaderSettings
+	{
+		private static bool _isFrozen;
+		private static Func<string, IntPtr> _loadLibraryOverride;
+
+		/// <summary>
+		/// Gets or sets the function to override the default native library loading behavior.
+		/// Can be set only on initialization stage before the first library is loaded, otherwise throws an exception.
+		/// </summary>
+		public static Func<string, IntPtr> LoadLibraryOverride
+		{
+			get => _loadLibraryOverride;
+			set
+			{
+				if (_isFrozen)
+					throw new Exception ("After any native library is loaded, the load method cannot be changed.");
+
+				_loadLibraryOverride = value;
+			}
+		}
+
+		internal static void Freeze () => _isFrozen = true;
+	}
+
 	internal static class LibraryLoader
 	{
 		static LibraryLoader ()
@@ -25,9 +50,16 @@ namespace SkiaSharp
 
 		public static IntPtr LoadLocalLibrary<T> (string libraryName)
 		{
-			var libraryPath = GetLibraryPath (libraryName);
+			LibraryLoaderSettings.Freeze ();
 
-			var handle = LoadLibrary (libraryPath);
+			IntPtr handle;
+			if (LibraryLoaderSettings.LoadLibraryOverride != null)
+				handle = LibraryLoaderSettings.LoadLibraryOverride (libraryName);
+			else {
+				var libraryPath = GetLibraryPath (libraryName);
+				handle = LoadLibrary (libraryPath);
+			}
+
 			if (handle == IntPtr.Zero)
 				throw new DllNotFoundException ($"Unable to load library '{libraryName}'.");
 
