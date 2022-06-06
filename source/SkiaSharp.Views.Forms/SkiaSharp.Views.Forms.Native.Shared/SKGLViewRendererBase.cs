@@ -1,4 +1,4 @@
-﻿#if !__GTK__ && !WINDOWS && !NETSTANDARD
+﻿#if !__GTK__ && !WINDOWS && !__MACCATALYST__ && !NETSTANDARD
 using System;
 using System.ComponentModel;
 
@@ -11,11 +11,11 @@ using SKFormsView = SkiaSharp.Views.Maui.Controls.SKGLView;
 
 #if __ANDROID__
 using Android.Content;
-using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+using Microsoft.Maui.Controls.Handlers.Compatibility;
 using SKNativeView = SkiaSharp.Views.Android.SKGLTextureView;
 using SKNativePaintGLSurfaceEventArgs = SkiaSharp.Views.Android.SKPaintGLSurfaceEventArgs;
 #elif __IOS__
-using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
+using Microsoft.Maui.Controls.Handlers.Compatibility;
 using SKNativeView = SkiaSharp.Views.iOS.SKGLView;
 using SKNativePaintGLSurfaceEventArgs = SkiaSharp.Views.iOS.SKPaintGLSurfaceEventArgs;
 #endif
